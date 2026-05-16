@@ -1,2 +1,5 @@
+<<<<<<< HEAD
 hello, this is file.txt
 learning git..
+=======
+>>>>>>> parent of 5829e2b (changes in file.txt)g
