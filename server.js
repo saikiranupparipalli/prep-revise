@@ -1,6 +1,7 @@
 import app from "./src/app.js";
 import dotenv from "dotenv/config"
 import db from "./src/common/config/db/db.js";
+import { globalDto } from "./src/common/config/dto/dto.js";
 
 const PORT = process.env.PORT || 8080;
 const server = async () => {
