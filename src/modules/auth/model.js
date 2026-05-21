@@ -33,6 +33,7 @@ const userSchema = new mongoose.Schema({
   },
 
   verificationToken: { type: String, select: false },
+  refreshToken:{type:String, select:false }
 });
 
 export default mongoose.model("User", userSchema)
