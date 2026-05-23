@@ -103,4 +103,4 @@ const getMe = async (userid) => {
   return user;
 };
 
-export { register, login, logOut, newRefreshToken, forgotPassword };
+export { register, login, logOut, newRefreshToken, forgotPassword, getMe};

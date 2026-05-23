@@ -57,4 +57,4 @@ const getMe = async(req, res)=>{
   const response = ApiResponse.ok("profile details", user)
   res.send(response)
 }
-export { regiser, login, logOut, newRefreshToken, forgotPassword};
+export { regiser, login, logOut, newRefreshToken, forgotPassword, getMe};
