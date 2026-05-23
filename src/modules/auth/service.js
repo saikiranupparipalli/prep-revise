@@ -53,7 +53,7 @@ const login = async ({ email, password }) => {
   delete userObj.refreshToken;
 
   return { user: userObj, accessToken, refreshToken };
-}; //incomplete
+};
 const logOut = async (userid) => {
   const user = await User.findById(userid);
   if (!user) throw ApiError.forbidden("user not found");
@@ -73,7 +73,7 @@ const newRefreshToken = async (token) => {
     email: user.email,
     role: user.role,
   });
-  const refreshToken = generateRefreshToken( );
+  const refreshToken = generateRefreshToken();
   const hashToken = crypto
     .createhash("sha256")
     .update(refreshToken)
@@ -83,5 +83,24 @@ const newRefreshToken = async (token) => {
   await user.save(refreshToken);
   return { accessToken, refreshToken };
 };
+const forgotPassword = async (email) => {
+  const user = await User.findOne({ email }).select(
+    "+resetPassword +resetPasswordExpires",
+  );
+  if (!user) throw ApiError.notfound("user not found");
+  const { rawToken, hashedToken } = generateToken();
 
-export { register, login, logOut };
+  user.resetPassword = hashedToken;
+  user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
+  await user.save();
+
+  return { email, rawToken };
+};
+
+const getMe = async (userid) => {
+  const user = await User.findById(userid);
+  if (!user) throw ApiError.forbidden("user not found");
+  return user;
+};
+
+export { register, login, logOut, newRefreshToken, forgotPassword };

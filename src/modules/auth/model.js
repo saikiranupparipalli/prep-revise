@@ -32,8 +32,10 @@ const userSchema = new mongoose.Schema({
     select: false,
   },
 
-  verificationToken: { type: String, select: false },
-  refreshToken:{type:String, select:false },
+  verificationToken: { type: String, select: false },//used while registering a new user
+  refreshToken:{type:String, select:false },//used while generation of new Refresh token
+  resetPassword:{type:String, select:false},
+  resetPasswordExpires:{type:String, select:false}//used for forgot password.
 
 
 

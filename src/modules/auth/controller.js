@@ -20,7 +20,11 @@ const login = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
-  ApiResponse.ok("Login successful", { accessToken, refreshToken });
+  const response = ApiResponse.ok("Login successful", {
+    accessToken,
+    refreshToken,
+  });
+  res.send(response);
 };
 
 const logOut = async (req, res) => {
@@ -30,8 +34,27 @@ const logOut = async (req, res) => {
 };
 
 const newRefreshToken = async (req, res) => {
-  const user = await service.newRefreshToken(req.user.id);
-  res.send({accessToken, refreshToken})
-  ApiResponse.created("New access, refresh tokens are sent.", user)
+  const { accessToken, refreshToken } = await service.newRefreshToken(
+    req.user.id,
+  );
+  const response = ApiResponse.created(
+    "New access, refresh tokens are sent.",
+    accessToken,
+    refreshToken,
+  );
+  res.send(response);
 };
-export { regiser, login, logOut };
+
+const forgotPassword = async (req, res) => {
+  const { email, rawToken } = await service.forgotPassword(req.body.email);
+  //here we will write an email code of link
+  const response = ApiResponse.sent("email link is sent", email, rawToken)
+  res.send(response)
+};
+
+const getMe = async(req, res)=>{
+  const user = await service.getMe(req.user.id)
+  const response = ApiResponse.ok("profile details", user)
+  res.send(response)
+}
+export { regiser, login, logOut, newRefreshToken, forgotPassword};
