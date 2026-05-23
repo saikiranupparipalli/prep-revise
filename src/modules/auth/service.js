@@ -52,9 +52,14 @@ const login = async ({ email, password }) => {
   delete userObj.password;
   delete userObj.refreshToken;
 
-  return({user: userObj, accessToken, refreshToken})
+  return { user: userObj, accessToken, refreshToken };
 }; //incomplete
+const logOut = async (userid) => {
+  const user = await User.findById(userid);
+  if (!user) throw ApiError.forbidden("user not found");
 
+  await User.findByIdAndUpdate(userid, { refreshToken: null });
+};
 const newRefreshToken = async (token) => {
   if (!token) ApiError.unauthorized("refresh token is missing");
 
@@ -68,9 +73,15 @@ const newRefreshToken = async (token) => {
     email: user.email,
     role: user.role,
   });
+  const refreshToken = generateRefreshToken( );
+  const hashToken = crypto
+    .createhash("sha256")
+    .update(refreshToken)
+    .digest("hex");
 
-  const hashToken = crypto.createhash("sha256").update(token).digest("hex");
-  // here, we are creating a accessToken with the data which we wanted to send user and after that
-  // we are hasing the accessToken then how actually refreshToken is getting generated using generateAccessToken method.
-}; //incomplete
-export { register };
+  user.refreshToken = hashToken;
+  await user.save(refreshToken);
+  return { accessToken, refreshToken };
+};
+
+export { register, login, logOut };
