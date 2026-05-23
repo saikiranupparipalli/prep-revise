@@ -33,7 +33,19 @@ const userSchema = new mongoose.Schema({
   },
 
   verificationToken: { type: String, select: false },
-  refreshToken:{type:String, select:false }
+  refreshToken:{type:String, select:false },
+
+
+
 });
+
+  userSchema.pre("save", async(next)=>{
+    if(!this.isModified("password")) return next()
+    this.password = await bcrypt.hash(this.password, 12)
+    next()
+  })
+  userSchema.methods.comparePassword = async(userTxtPassword)=>{
+    return bcrypt.compare(userTxtPassword, this.password)
+  }
 
 export default mongoose.model("User", userSchema)

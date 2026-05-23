@@ -1,6 +1,15 @@
-import { generateToken, verifyRefreshToken } from "../../common/utils/jwt";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+  generateToken,
+  verifyRefreshToken,
+} from "../../common/utils/jwt";
 import User from "./model.js";
 import { ApiError } from "../../common/utils/api-errors.js";
+
+const hashToken = (token) => {
+  crypto.createhash("sha256").update(token).digest("hex");
+};
 
 const register = async ({ name, email, password, role }) => {
   const user = await User.findOne({ email });
@@ -18,20 +27,50 @@ const register = async ({ name, email, password, role }) => {
   //send emailto user
 };
 
-const login = async({email, password})=>{
-  await User.findOne({email}).select("+password")
-  if(!user) throw ApiError.unauthorized("wrong email or password")
+const login = async ({ email, password }) => {
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) throw ApiError.unauthorized("wrong email or password");
 
-  
+  const isMatch = await user.comparePassword("password");
+  if (!isMatch) throw ApiError.unauthorized("invalid email or password");
 
-}//incomplete
+  if (!user.isverified) throw ApiError.forbidden("please verify your email");
 
-const newRefreshToken = async(token)=>{
-  if(!token) ApiError.unauthorized("refresh token is missing")
+  const accessToken = generateAccessToken({
+    email: user.email,
+    role: user.role,
+    name: user.name,
+  });
 
-  const decoded = verifyRefreshToken(token)
+  const refreshToken = generateRefreshToken({ id: user._id });
 
-  const user = await User.findById(decoded.id).select("+refreshToken")
-}
+  user.refreshToken = hashToken(refreshToken);
 
-export {register}
+  await user.save({ validateBeforeSave: false });
+
+  const userObj = user.toObject();
+  delete userObj.password;
+  delete userObj.refreshToken;
+
+  return({user: userObj, accessToken, refreshToken})
+}; //incomplete
+
+const newRefreshToken = async (token) => {
+  if (!token) ApiError.unauthorized("refresh token is missing");
+
+  const decoded = verifyRefreshToken(token);
+
+  const user = await User.findById(decoded.id).select("+refreshToken");
+  if (!user) throw ApiError.unauthorized("user not found");
+
+  const accessToken = generateAccessToken({
+    id: user.id,
+    email: user.email,
+    role: user.role,
+  });
+
+  const hashToken = crypto.createhash("sha256").update(token).digest("hex");
+  // here, we are creating a accessToken with the data which we wanted to send user and after that
+  // we are hasing the accessToken then how actually refreshToken is getting generated using generateAccessToken method.
+}; //incomplete
+export { register };
