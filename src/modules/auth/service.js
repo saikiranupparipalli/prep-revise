@@ -5,7 +5,11 @@ import {
   verifyRefreshToken,
 } from "../../common/utils/jwt.js";
 import User from "./model.js";
-import  ApiError from "../../common/utils/api-errors.js";
+import ApiError from "../../common/utils/api-errors.js";
+import {
+  sendVerificationEmail,
+  sendResetPasswordEmail,
+} from "../../common/utils/email.js";
 
 const hashToken = (token) => {
   crypto.createhash("sha256").update(token).digest("hex");
@@ -25,6 +29,11 @@ const register = async ({ name, email, password, role }) => {
   });
 
   //send emailto user
+  try {
+    await sendVerificationEmail(email, rawToken);
+  } catch (err) {
+    console.error("Failed to send verification email:", err.message);
+  }
 };
 
 const login = async ({ email, password }) => {
@@ -62,6 +71,31 @@ const logOut = async (userid) => {
 };
 
 //complete verifyEmail
+const verifyEmail = async (token) => {
+  const trimmedToken = String(token).trim();
+  if (!trimmedToken) throw ApiError.badreq("invalid token");
+
+  const hashedInput = hashToken(trimmedToken);
+  let user = await User.findOne({ verificationToken: hashedInput }).select(
+    "+verificationToken",
+  );
+  if (!user) {
+    user = await User.findOne({ verificationToken: trimmedToken }).select(
+      "+verificationToken",
+    );
+  }
+
+  if (!user) {
+    throw ApiError.badreq("invalid token");
+  }
+
+  await User.findByIdAndUpdate(user._id, {
+    $set: { isverified: true },
+    $unset: { verificationToken: 1 },
+  });
+  return user;
+};
+
 const newRefreshToken = async (token) => {
   if (!token) ApiError.unauthorized("refresh token is missing");
 
@@ -100,11 +134,34 @@ const forgotPassword = async (email) => {
 };
 
 //complete resetPassword
+const resetPassword = async (token, newPassword) => {
+  const hashedToken = hashToken(token);
+
+  const user = await User.findOne({
+    resetPassword: hashedToken,
+    resetPasswordExpires: { $gt: Date.now() },
+  }).select("+resetPassword +resetPasswordExpires");
+
+  if (!user) throw ApiError.badreq("invalid token");
+
+  user.password = newPassword;
+  user.resetPassword = undefined;
+  user.resetPasswordExpires = undefined;
+  await user.save();
+};
 const getMe = async (userid) => {
   const user = await User.findById(userid);
   if (!user) throw ApiError.forbidden("user not found");
   return user;
 };
 
-export { register, login, logOut, newRefreshToken, forgotPassword, getMe};
-  
+export {
+  register,
+  login,
+  logOut,
+  newRefreshToken,
+  forgotPassword,
+  getMe,
+  verifyEmail,
+  resetPassword,
+};

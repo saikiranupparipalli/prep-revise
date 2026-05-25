@@ -1,8 +1,7 @@
 import app from "./src/app.js";
-import dotenv from "dotenv/config"
+import dotenv from "dotenv/config";
 import db from "./src/common/config/db/db.js";
- 
- 
+
 const PORT = process.env.PORT || 8080;
 const server = async () => {
   app.listen(PORT, () => {
@@ -12,8 +11,7 @@ const server = async () => {
   });
 };
 
-server().catch((err)=>{
-  console.error("failed to start server", err)
-  process.exit(1)
-})
- 
+server().catch((err) => {
+  console.error("failed to start server", err);
+  process.exit(1);
+});
