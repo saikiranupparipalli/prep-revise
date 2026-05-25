@@ -10,5 +10,5 @@ const router = Router()
 router.post("/register", validate(registerDto), controller.register)
 router.post("/login", validate(loginDto), controller.login)
 router.get("/profile", authenticate, controller.getMe)
-
+//complete verify-email, forgotPassword, reset-password
 export   default router

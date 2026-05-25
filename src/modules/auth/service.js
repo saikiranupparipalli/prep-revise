@@ -60,6 +60,8 @@ const logOut = async (userid) => {
 
   await User.findByIdAndUpdate(userid, { refreshToken: null });
 };
+
+//complete verifyEmail
 const newRefreshToken = async (token) => {
   if (!token) ApiError.unauthorized("refresh token is missing");
 
@@ -93,10 +95,11 @@ const forgotPassword = async (email) => {
   user.resetPassword = hashedToken;
   user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
   await user.save();
-
+  //complete sendResetPasswordEmail
   return { email, rawToken };
 };
 
+//complete resetPassword
 const getMe = async (userid) => {
   const user = await User.findById(userid);
   if (!user) throw ApiError.forbidden("user not found");

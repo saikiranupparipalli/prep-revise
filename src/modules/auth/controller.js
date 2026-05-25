@@ -41,4 +41,6 @@ const getMe = async (req, res) => {
   res.send(response);
 };
 
+//complete verifyEmail, forgotPassword, resetPassword
+
 export {register, login, logOut, getMe}

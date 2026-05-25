@@ -12,7 +12,7 @@ const transporter = nodemailer.createTestAccount({
 
 const sendMail = async(from, subject, to)=>{
     await transporter.sendMail({
-        from: `${SMTP_FROM_EMAIL}`,
+        from: `"${process.env.SMTP_FROM_NAME}"<${SMTP_FROM_EMAIL}>`,
         to,
         subject,
         html
