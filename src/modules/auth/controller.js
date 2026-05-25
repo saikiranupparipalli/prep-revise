@@ -1,5 +1,5 @@
 import * as service from "./service.js";
-import ApiResponse from "../../common/utils/api-response.js";
+import ApiResponse from "../../common/utils/api-responses.js";
 
 const register = async (req, res) => {
   const user = await service.register(req.body);

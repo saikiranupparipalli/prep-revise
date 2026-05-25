@@ -1,5 +1,5 @@
-import { ApiError } from "../../common/utils/api-errors";
-import { verifyAccessToken } from "../../common/utils/jwt";
+import ApiError from "../../common/utils/api-errors.js";
+import { verifyAccessToken } from "../../common/utils/jwt.js";
 import User from "./model.js";
 const authenticate = async (req, res, next) => {
   if (!req.headers.authorization?.startsWith("Bearer")) {

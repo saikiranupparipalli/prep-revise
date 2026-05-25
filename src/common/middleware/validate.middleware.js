@@ -1,13 +1,15 @@
-import ApiErrors from ""
+import ApiError from "../utils/api-errors.js"
 
 const validate = (dtoclass)=>{
-    (req, res, next)=>{
+    return (req, res, next)=>{
         const {errors, value} = dtoclass.validate(req.body)
         if(errors){
-            throw ApiErrors.badRequest()
+            throw ApiError.badRequest()
         }
         req.body = value
+        next()
     }
+    
 }
 
 export default validate

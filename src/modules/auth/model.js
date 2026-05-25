@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import globaldDto from "../../common/config/dto/dto.js";
-import { required, string } from "joi";
+import joi from "joi";
 
 const userSchema = new mongoose.Schema({
   name: {

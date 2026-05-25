@@ -3,9 +3,9 @@ import {
   generateRefreshToken,
   generateToken,
   verifyRefreshToken,
-} from "../../common/utils/jwt";
+} from "../../common/utils/jwt.js";
 import User from "./model.js";
-import { ApiError } from "../../common/utils/api-errors.js";
+import  ApiError from "../../common/utils/api-errors.js";
 
 const hashToken = (token) => {
   crypto.createhash("sha256").update(token).digest("hex");

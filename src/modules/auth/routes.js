@@ -8,7 +8,7 @@ import registerDto from "./Dto/register.dto.js"
 const router = Router()
 
 router.post("/register", validate(registerDto), controller.register)
-router.post("/login", validate(loginDto))
+router.post("/login", validate(loginDto), controller.login)
 router.get("/profile", authenticate, controller.getMe)
 
-export default router
+export   default router

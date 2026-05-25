@@ -1,5 +1,5 @@
 import crypto from "crypto"
-import jwt from "jwt"
+import jwt from "jsonwebtoken"
 
 const generateToken = ()=>{
     const rawToken = crypto.randomBytes(32).toString("hex")

@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { globalDto } from "../../../common/config/dto/dto";
+import  globalDto  from "../../../common/config/dto/dto.js";
 
 class registerDto extends globalDto{
     static schema = Joi.object({

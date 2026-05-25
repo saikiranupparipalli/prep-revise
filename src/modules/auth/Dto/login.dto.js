@@ -1,5 +1,5 @@
-import { globalDto } from "../../../common/config/dto/dto";
-import joi from "joi"
+import  globalDto  from "../../../common/config/dto/dto.js";
+import Joi from "joi"
 
 
 class loginDto extends globalDto{

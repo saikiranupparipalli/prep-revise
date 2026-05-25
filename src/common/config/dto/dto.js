@@ -4,16 +4,16 @@ class globalDto {
   static schema = Joi.object({});
 
   static validate(data) {
-    const { error, data } = this.schema.validate(data, {
+    const { error, value } = this.schema.validate(value, {
       abortEarly: false,
       stripUnknown: true,
     });
 
     if (error) {
       const errors = error.details.map((e) => e.details);
-      return { errors, data: null };
+      return { errors, value: null };
     }
-    return { error: null, data };
+    return { error: null, value };
   }
 }
-export {globalDto}  
+export default globalDto
