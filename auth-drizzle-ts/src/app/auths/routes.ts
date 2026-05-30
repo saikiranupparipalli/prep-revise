@@ -9,6 +9,4 @@ const authenticationController = new AuthenticationController
 
 authRouter.post('/sign-up', authenticationController.handleSignUp.bind(authenticationController))
 
- authRouter.get('/me',(_, res)=>{
-    res.json({message:  "working"})
- })
+authRouter.post('/sign-in', authenticationController.handleSignIn.bind(authenticationController))
