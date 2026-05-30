@@ -1,14 +1,14 @@
 services:
-    postgres:
+  postgres:
     image: postgres:17
     ports:
-    - '5432:5432'
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: postgres123
       POSTGRES_DB: Database
     volumes:
-    - 'postgres_data:var/lib/postgres/data'
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   postgres_data:
