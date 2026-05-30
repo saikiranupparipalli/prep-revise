@@ -12,8 +12,12 @@ export const accessToken = (payload: userToken) => {
 };
 
 export const verifyAccessToken = (token: string) => {
-  const payload = jwt.verify(token, process.env.ACCESS_TOKEN!) as userToken;
+ try {
+   const payload = jwt.verify(token, process.env.ACCESS_TOKEN!)  
   return payload;
+ } catch (error) {
+  return null
+ }
 };
 
 export const refreshToken = (payload: userToken) => {

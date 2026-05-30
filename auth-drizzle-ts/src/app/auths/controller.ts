@@ -2,10 +2,10 @@ import type { Request, Response } from "express";
 import { signInModel, signUpModel } from "./model.js";
 import { db } from "../../db/db.js";
 import { usersTable } from "../../db/schema.js";
-
+ 
 import { eq } from "drizzle-orm";
 import { createHmac, randomBytes } from "node:crypto";
-import { accessToken, refreshToken } from "./utils/token.js";
+import { accessToken, refreshToken, type userToken } from "./utils/token.js";
 
 export class AuthenticationController {
   public async handleSignUp(req: Request, res: Response) {
@@ -94,5 +94,17 @@ export class AuthenticationController {
     }).where(eq(usersTable.email, checkUserEmail.email))
 
     return res.json({message:`signin successful`, data:{email: checkUserEmail, acccestoken: accessTokenValue, refreshtoken: refreshTokenValue}})
+  }
+
+  public async handleMe(req:Request, res:Response){
+        const {id} =  req.id! as userToken
+
+     const [userInfo] = await db.select().from(usersTable).where(eq(usersTable.id, id))
+
+     return res.json({
+      firstName:userInfo?.firstName,
+      lastName:userInfo?.lastName,
+      email:userInfo?.email
+     })
   }
 }
